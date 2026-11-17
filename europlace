@@ -1,0 +1,242 @@
+index.html
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="EUROPLACE : annonces automobiles, immobilières et locations en Europe.">
+<title>EUROPLACE — Marketplace européenne</title>
+<style>
+:root {
+  --navy:#10243a;
+  --blue:#1769aa;
+  --light:#f3f6fa;
+  --white:#fff;
+  --text:#253449;
+  --muted:#78879a;
+  --border:#e4eaf0;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:var(--light);color:var(--text)}
+header{background:var(--navy);color:white;padding:18px 6%;display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap}
+.logo{font-size:25px;font-weight:900;letter-spacing:1px}
+.logo span{color:#59b5f4}
+nav{display:flex;gap:20px;flex-wrap:wrap}
+nav a{color:white;text-decoration:none;font-size:14px}
+nav a:hover{color:#59b5f4}
+.hero{background:linear-gradient(120deg,#10243a,#185b88);color:white;padding:65px 6%;text-align:center}
+.hero h1{font-size:clamp(29px,5vw,48px);margin-bottom:15px}
+.hero p{color:#d7e7f5;margin-bottom:27px}
+.search{max-width:850px;margin:auto;background:white;padding:10px;border-radius:12px;display:flex;gap:8px;flex-wrap:wrap}
+.search input,.search select{flex:1;min-width:130px;padding:13px;border:1px solid var(--border);border-radius:7px;outline:none}
+button{cursor:pointer;border:0;border-radius:7px;padding:13px 20px;background:var(--blue);color:white;font-weight:bold}
+button:hover{opacity:.88}
+.categories{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:22px}
+.categories button{background:#ffffff20;border:1px solid #ffffff55}
+.categories button.active{background:white;color:var(--navy)}
+.container{max-width:1200px;margin:auto;padding:40px 5%}
+.section-title{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:23px;flex-wrap:wrap}
+.section-title h2{font-size:25px;color:var(--navy)}
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:25px}
+.filters select{padding:11px;border:1px solid var(--border);border-radius:7px;background:white}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:22px}
+.card{background:white;border-radius:12px;overflow:hidden;border:1px solid var(--border);transition:.2s}
+.card:hover{transform:translateY(-4px);box-shadow:0 8px 25px #10243a12}
+.card-image{height:175px;background:#dce8f1;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.card-image img{width:100%;height:100%;object-fit:cover}
+.tag{position:absolute;top:12px;left:12px;background:#1769aa;color:white;padding:6px 10px;border-radius:5px;font-size:11px}
+.card-body{padding:17px}
+.card-body h3{font-size:17px;margin-bottom:10px}
+.price{font-size:21px;color:var(--blue);font-weight:bold;margin:12px 0}
+.details{font-size:13px;color:var(--muted);line-height:1.8}
+.card-body button{width:100%;margin-top:14px}
+.empty{padding:35px;text-align:center;background:white;border-radius:10px;color:var(--muted);grid-column:1/-1}
+.about{background:white;padding:35px;border-radius:12px;line-height:1.8}
+.about h2{color:var(--navy);margin-bottom:12px}
+footer{background:var(--navy);color:#d3dfeb;padding:35px 6%;text-align:center;line-height:2}
+footer strong{color:white}
+.hidden{display:none!important}
+@media(max-width:600px){
+header{justify-content:center}
+nav{justify-content:center}
+.hero{padding:45px 5%}
+.search{flex-direction:column}
+.search input,.search select{width:100%}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">EURO<span>PLACE</span></div>
+  <nav>
+    <a href="#accueil">Accueil</a>
+    <a href="#annonces">Annonces</a>
+    <a href="#categories">Catégories</a>
+    <a href="#apropos">À propos</a>
+  </nav>
+</header>
+
+<section class="hero" id="accueil">
+  <h1>Trouvez votre prochaine opportunité.</h1>
+  <p>Automobile, immobilier et locations partout en Europe.</p>
+
+  <div class="search">
+    <input id="keyword" type="search" placeholder="Que recherchez-vous ?">
+    <select id="country">
+      <option value="">Tous les pays</option>
+      <option>France</option>
+      <option>Belgique</option>
+      <option>Allemagne</option>
+      <option>Espagne</option>
+      <option>Italie</option>
+      <option>Portugal</option>
+      <option>Pays-Bas</option>
+      <option>Suisse</option>
+      <option>Royaume-Uni</option>
+    </select>
+    <button onclick="filterListings()">Rechercher</button>
+  </div>
+
+  <div class="categories" id="categories">
+    <button class="active" onclick="setCategory('Tous',this)">Tout</button>
+    <button onclick="setCategory('Automobile',this)">Automobile</button>
+    <button onclick="setCategory('Immobilier',this)">Immobilier</button>
+    <button onclick="setCategory('Location',this)">Locations</button>
+  </div>
+</section>
+
+<main class="container" id="annonces">
+  <div class="section-title">
+    <h2>Nos annonces</h2>
+    <span id="resultCount">Chargement...</span>
+  </div>
+
+  <div class="filters">
+    <select id="sort" onchange="filterListings()">
+      <option value="">Trier par</option>
+      <option value="asc">Prix croissant</option>
+      <option value="desc">Prix décroissant</option>
+    </select>
+  </div>
+
+  <div class="grid" id="listingGrid"></div>
+</main>
+
+<section class="container" id="apropos">
+  <div class="about">
+    <h2>Bienvenue sur EUROPLACE</h2>
+    <p>EUROPLACE est une plateforme de petites annonces dédiée au marché européen. Retrouvez des véhicules, des biens immobiliers et des logements à louer dans plusieurs pays.</p>
+    <p>Notre objectif : faciliter la recherche et la mise en relation entre acheteurs, vendeurs, propriétaires et professionnels.</p>
+  </div>
+</section>
+
+<footer>
+  <strong>EUROPLACE</strong><br>
+  Votre marketplace européenne.<br>
+  Automobile · Immobilier · Location<br>
+  <small>© 2026 EUROPLACE. Tous droits réservés.</small>
+</footer>
+
+<script>
+const listings = [
+ {
+ id:1,category:"Automobile",title:"Mercedes-Benz Classe C",
+ price:18500,currency:"EUR",country:"France",city:"Paris",
+ details:"2021 · Diesel · Automatique · 48 000 km",
+ image:"https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=800"
+ },
+ {
+ id:2,category:"Automobile",title:"BMW Série 3",
+ price:22900,currency:"EUR",country:"Allemagne",city:"Berlin",
+ details:"2022 · Essence · Automatique · 32 000 km",
+ image:"https://images.unsplash.com/photo-1555215695-3004980ad54e?w=800"
+ },
+ {
+ id:3,category:"Immobilier",title:"Appartement moderne",
+ price:245000,currency:"EUR",country:"France",city:"Lyon",
+ details:"3 pièces · 75 m² · 2 chambres",
+ image:"https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800"
+ },
+ {
+ id:4,category:"Location",title:"Appartement lumineux",
+ price:950,currency:"EUR",country:"Belgique",city:"Bruxelles",
+ details:"2 pièces · 55 m² · Meublé",
+ image:"https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=800"
+ },
+ {
+ id:5,category:"Immobilier",title:"Maison familiale",
+ price:320000,currency:"EUR",country:"Espagne",city:"Madrid",
+ details:"5 pièces · 140 m² · Jardin",
+ image:"https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800"
+ },
+ {
+ id:6,category:"Automobile",title:"Audi A4",
+ price:16900,currency:"EUR",country:"Belgique",city:"Anvers",
+ details:"2020 · Diesel · Automatique · 65 000 km",
+ image:"https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=800"
+ }
+];
+
+let selectedCategory="Tous";
+
+function money(price,currency){
+ return new Intl.NumberFormat("fr-FR").format(price)+" "+currency;
+}
+
+function render(data){
+ const grid=document.getElementById("listingGrid");
+ document.getElementById("resultCount").textContent=data.length+" annonce(s)";
+ if(!data.length){
+ grid.innerHTML='<div class="empty">Aucune annonce ne correspond à votre recherche.</div>';
+ return;
+ }
+ grid.innerHTML=data.map(item=>`
+ <article class="card">
+ <div class="card-image">
+ <img src="${item.image}" alt="${item.title}" loading="lazy" onerror="this.style.display='none'">
+ <span class="tag">${item.category}</span>
+ </div>
+ <div class="card-body">
+ <h3>${item.title}</h3>
+ <div class="details">📍 ${item.city}, ${item.country}<br>${item.details}</div>
+ <div class="price">${money(item.price,item.currency)}${item.category==="Location"?" / mois":""}</div>
+ <button onclick="contact(${item.id})">Demander des informations</button>
+ </div>
+ </article>
+ `).join("");
+}
+
+function filterListings(){
+ const keyword=document.getElementById("keyword").value.toLowerCase();
+ const country=document.getElementById("country").value;
+ const sort=document.getElementById("sort").value;
+ let result=listings.filter(item=>{
+  const text=(item.title+" "+item.city+" "+item.country+" "+item.details).toLowerCase();
+  return (selectedCategory==="Tous"||item.category===selectedCategory)
+  &&(!country||item.country===country)
+  &&(!keyword||text.includes(keyword));
+ });
+ if(sort==="asc")result.sort((a,b)=>a.price-b.price);
+ if(sort==="desc")result.sort((a,b)=>b.price-a.price);
+ render(result);
+}
+
+function setCategory(category,button){
+ selectedCategory=category;
+ document.querySelectorAll(".categories button").forEach(b=>b.classList.remove("active"));
+ button.classList.add("active");
+ filterListings();
+}
+
+function contact(id){
+ const item=listings.find(x=>x.id===id);
+ alert("Demande d'information pour : "+item.title+
+ "\n\nLe système de contact sera connecté lors de la prochaine étape.");
+}
+
+document.getElementById("keyword").addEventListener("input",filterListings);
+render(listings);
+</script>
+</body>
+</html>
